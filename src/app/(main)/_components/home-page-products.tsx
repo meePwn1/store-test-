@@ -3,20 +3,21 @@
 import { ProductGrid } from '@/app/(main)/_components/product/product-grid'
 import { useFetchProductsQuery } from '@/services/products/product.service'
 import { TProduct } from '@/services/products/product.types'
-import { productsSelectors } from '@/store/products.slice'
-import { useAppSelector } from '@/store/store'
-import { useEffect, useState } from 'react'
+import { productsSelectors, setLimit } from '@/store/products.slice'
+import { useAppDispatch, useAppSelector } from '@/store/store'
+import { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 export const HomePageProducts = () => {
 	const products = useAppSelector(productsSelectors.selectProducts)
-	const [limit, setLimit] = useState(12)
+	const limit = useAppSelector(productsSelectors.selectLimit)
+	const dispatch = useAppDispatch()
 	const { ref, inView } = useInView({ threshold: 0 })
 	const { isLoading, isFetching, data } = useFetchProductsQuery({ limit })
 
 	useEffect(() => {
 		if (inView && data && data?.total > limit) {
-			setLimit(prev => prev + 12)
+			dispatch(setLimit(limit + 12))
 		}
 	}, [inView])
 

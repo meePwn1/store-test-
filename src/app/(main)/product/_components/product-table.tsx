@@ -5,23 +5,24 @@ import { UpdateProduct } from '@/app/(main)/product/_components/update-product'
 import { TableHeader } from '@/app/components/sharing/table-header'
 import { Table } from '@/app/components/ui/table'
 import { useFetchProductsQuery } from '@/services/products/product.service'
-import { productsSelectors } from '@/store/products.slice'
-import { useAppSelector } from '@/store/store'
+import { productsSelectors, setLimit } from '@/store/products.slice'
+import { useAppDispatch, useAppSelector } from '@/store/store'
 import { Pencil, Trash } from 'lucide-react'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 const columns = ['№', 'Наименование', 'Категория', '']
 export const ProductTable = () => {
 	const products = useAppSelector(productsSelectors.selectProducts)
-	const [limit, setLimit] = useState(12)
+	const limit = useAppSelector(productsSelectors.selectLimit)
+	const dispatch = useAppDispatch()
 	const { ref, inView } = useInView({ threshold: 0 })
 	const { data, isFetching, isLoading } = useFetchProductsQuery({ limit })
 
 	useEffect(() => {
 		if (inView && data && data?.total > limit) {
-			setLimit(prev => prev + 12)
+			dispatch(setLimit(limit + 12))
 		}
 	}, [inView])
 

@@ -7,18 +7,23 @@ type ProductsState = {
 	categoryList: string[]
 	productCategories: TProductCategory[]
 	cart: TProduct[]
+	limit: number
 }
 const initialState: ProductsState = {
 	products: [],
 	categoryList: [],
 	productCategories: [],
 	cart: [],
+	limit: 12,
 }
 
 export const productsSlice = createSlice({
 	name: 'products',
 	initialState,
 	reducers: {
+		setLimit: (state, action: PayloadAction<number>) => {
+			state.limit = action.payload
+		},
 		updateProduct: (
 			state,
 			action: PayloadAction<
@@ -72,6 +77,7 @@ export const productsSlice = createSlice({
 		selectProducts: (state: ProductsState) => state.products,
 		selectCategoryList: (state: ProductsState) => state.categoryList,
 		selectProductCategories: (state: ProductsState) => state.productCategories,
+		selectLimit: (state: ProductsState) => state.limit,
 	},
 	extraReducers: builder => {
 		builder.addMatcher(isAnyOf(productsService.endpoints.fetchProducts.matchFulfilled), (state, action) => {
@@ -86,6 +92,6 @@ export const productsSlice = createSlice({
 	},
 })
 
-export const { addCategory, updateCategory, deleteCategory, deleteProduct, addProduct, updateProduct } =
+export const { addCategory, updateCategory, deleteCategory, deleteProduct, addProduct, updateProduct, setLimit } =
 	productsSlice.actions
 export const productsSelectors = productsSlice.selectors
